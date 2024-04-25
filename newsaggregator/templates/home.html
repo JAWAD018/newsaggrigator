@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>News Aggregator</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Connecting Bootstrap CSS file -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    
+    <style>
+      /* internal custom css */
+      body {
+        padding: 25px;
+        background-color: lavender;
+        color: black;
+        font-size: 25px;
+      }
+      /* class selector for dark mode*/
+      .dark-mode {
+        background-color: black;
+        color: white;
+      }
+      #dropdownMenuButton{
+        background-color: black;
+        color: white;
+        border: 2px solid black;
+        font-weight: bold;
+      }
+      #dropdownMenuButton:hover{
+        background-color:whitesmoke;
+        color: black;
+        border: 5px solid white;
+        font-weight: bold;
+      }
+      .dropdown-item:hover{
+        background-color: rgba(0, 0, 0, 0.596);
+        color: white;
+      }
+      
+     
+     .navbar {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-evenly;
+        background-color: black;
+        padding-top: .5rem;
+        border-radius: 15px;
+        padding-bottom: .8rem;
+      
+       }
+      .jumbotron{
+        border-radius: 15px;
+      }
+      
+      /* Styles for the popup container */
+.popup {
+    display: none; /* Hide the popup by default */
+    position: fixed; /* Position the popup relative to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 999; /* Ensure the popup appears on top of other content */
+}
+
+/* Styles for the popup content */
+.popup-content {
+    background-color: #fefefe; /* Popup background color */
+    margin: 15% auto; /* Center the popup vertically */
+    padding: 20px;
+    border: 5px solid #6acae5;
+    border-radius: 10px;
+    width: 80%; /* Set the width of the popup */
+    max-width: 700px; /* Maximum width of the popup */
+}
+
+/* Style for the close button */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+ 
+      
+    </style>
+  </head>
+
+  <body>
+    {% load social_share %}
+    
+
+    <div class="container">
+         <!-- popup -->
+  <!-- <button id="openPopupBtn">Open Popup</button> -->
+
+   <!-- The popup container -->
+   <div id="popupContainer" class="popup">
+       <!-- Popup content -->
+       <div class="popup-content">
+           <span class="close-btn" id="closePopupBtn" onclick="closePopup() ">&times;</span>
+           <h2>About Start AND Stop Button!</h2>
+           <p>You Can Use This Button To Change Background.</p>
+       </div>
+   </div>
+    
+   
+      <!-- end popup -->
+      <div class="jumbotron" style="background-color: rgb(7, 134, 73)">
+        <center>
+          <h2 class="display-3 text-white">Onion News Aggregator</h2>
+          <div class="dropdown">
+            <button
+              class="btn btn-info"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Category
+            </button>
+  
+      
+  
+           
+          
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="{% url 'scrape' name='latest' %}"
+                >Latest</a>
+                
+              <a
+                class="dropdown-item"
+                href="{% url 'scrape' name='entertainment' %}"
+                >Entertainment</a
+              >
+              <a class="dropdown-item" href="{% url 'scrape' name='sports' %}"
+                >Sports</a
+              >
+              <a class="dropdown-item" href="{% url 'scrape' name='politics' %}"
+                >Politics</a
+              >
+              <a class="dropdown-item" href="{% url 'scrape' name='opinion' %}"
+                >Opinion</a
+              >
+              <a
+                class="dropdown-item"
+                href="{% url 'scrape' name='breaking-news' %}"
+                >Breaking News</a
+              >
+            </div>
+          </div>
+          
+          <button
+            class="btn btn-warning btn-lg btn-block m-4 p-2"
+            onclick="themeChange()">
+            Change Theme
+          </button>
+          
+        </center>
+      </div>
+      <!-- NAVBAR -->
+      <div class="navbar">
+        <div class="inner">
+       
+          <a href="{% url 'home' %}"><button type="button" class="btn btn-primary" id="page">HOME</button></a>
+        <a href="{% url 'about' %}"><button type="button" class="btn btn-primary" >ABOUT</button></a>
+        <button type="button" class="btn btn-primary" id="start" onclick="startChange()">START</button>
+        <button type="button" class="btn btn-danger" id="stop" onclick="stopChange()">STOP</button>
+        </div>
+       </div>
+      <!-- <div class="bar">
+         <div class="page">
+            <button type="button" class="btn btn-primary"  id="start" onclick="startChange()">START</button>
+            <button type="button" class="btn btn-danger" id="stop" onclick="stopChange()">STOP</button>
+            <button type="button" class="btn btn-primary" id="page" >HOME</button>
+             <button type="button" class="btn btn-primary"  >ABOUT</button>
+            </div>
+          </div> -->
+
+      <div class="row mt-2 p-2">
+        <!-- 
+          Django Template Language
+          DTL help us to create conditional statements or logical loops inside template 
+        -->
+        {% for record in object_list %}
+        <!-- the following code will be repeated based on how many values are available in object_list -->
+        <div class="col-12 col-md-4 col-lg-3">
+          <div class="card mb-4"  style="border-radius: 15px; border: 2px solid lavender;">
+            <img class="card-img-top" style="border-radius: 15px; padding: 2px;"src="{{ record.image }}" />
+            <div class="card-body" >
+              <h5 class="card-title">
+                <a href="{{ record.url }}"
+                  >{{ record.title|truncatechars:50 }}</a
+                >
+              </h5>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex justify-content-between flex-wrap">
+                <div class="mb-2">
+                  <!-- Copy Button -->
+                  <button 
+                    class="btn btn-secondary btn-sm btn-block"
+                    onclick="copyToClipboard('{{ record.url }}')"
+                  >
+                    Copy
+                  </button>
+                </div>
+
+                <div class="mb-2">
+                  <!-- Report Button -->
+                  <button
+                    class="btn btn-danger btn-sm btn-block"
+                    onclick=" "
+                  >
+                    Report
+                  </button>
+                </div>
+
+                <div class="mb-2">
+                  <!-- Report Button -->
+                  <button
+                    class="btn btn-danger btn-sm btn-block"
+                    onclick=" "
+                  >
+                    Report
+                  </button>
+                </div>
+
+                <div class="mb-2">
+                  <!-- Social Share -->
+                    <a class="btn btn-success btn-sm"> Share </a>
+                    <a class="btn btn-outline-success btn-sm" href="https://www.facebook.com/sharer/sharer.php?u={{ currenturl }}"><i class="fa fa-facebook"></i></a>
+
+                    <a class="btn btn-outline-success btn-sm" href="https://api.whatsapp.com/send?text={{ currenturl }}"><i class="fa fa-whatsapp"></i></a>
+
+                    <a class="btn btn-outline-success btn-sm" href="https://t.me/share/url?text={{ currenturl }}"><i class="fa fa-telegram"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>       
+    
+   
+    <script>
+  function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Function to get a cookie
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+
+
+    // Function to open the popup if it hasn't been shown before
+    function openPopupOnce() {
+      var popupShown = getCookie("popupShown");
+      if (!popupShown) {
+        var popupContainer = document.getElementById('popupContainer');
+        popupContainer.style.display = 'block'; // Display the popup
+        setCookie("popupShown", "true", 30); // Set the cookie to indicate that the popup has been shown
+      }
+    }
+
+    // Call the openPopupOnce function when the page loads
+    window.addEventListener('load', openPopupOnce);
+
+    // Function to close the popup
+    function closePopup() {
+      var popupContainer = document.getElementById('popupContainer');
+      popupContainer.style.display = 'none'; // Hide the popup
+    }
+      
+      // Get reference to the popup container
+// const popupContainer = document.getElementById('popupContainer');
+
+// // Function to open the popup
+// function openPopup() {
+//     popupContainer.style.display = 'block'; // Display the popup
+// }
+
+// // Function to close the popup
+// function closePopup() {
+//     popupContainer.style.display = 'none'; // Hide the popup
+// }
+
+// // Call the openPopup function when the page loads
+// window.addEventListener('load', openPopup);
+
+// // Add event listener to close the popup when the close button is clicked
+// document.getElementById('closePopupBtn').addEventListener('click', closePopup);
+
+
+
+         const start=document.querySelector('#start')
+      const stop=document.querySelector('#stop')
+      const body=document.querySelector("body")
+      const randomColor=function(){
+        const hex='0123456789ABCEDF'
+        let color="#"
+        for(let i=0 ;i<6;i++){
+          color +=hex[parseInt(Math.random() *16) ];
+        }
+        return color;
+      }
+      let colorbg
+      const startChange=function(){
+        colorbg=setInterval(bg,1000)
+        function bg(){
+          body.style.backgroundColor=randomColor()
+        }
+        
+      }
+      const stopChange=function(){
+        clearInterval(colorbg)
+        colorbg=null
+      }
+      Stop.addEventListener('click',stopChange);
+      start.addEventListener('click',startChange);
+      // add a temporary textarea element, set url to it, select from there
+      function copyToClipboard(text) 
+      {
+        
+        var input = document.createElement("textarea");//create text area
+        input.value = text;//url set as value to textarea
+        document.body.appendChild(input);//add text area to body
+        input.select();//select textarea content
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        alert("Copied to clipboard: " + text);
+      }
+
+      function themeChange() {
+        var element = document.body;
+        element.classList.toggle("dark-mode");
+      }
+
+      
+   
+      </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+  </html>
+  
